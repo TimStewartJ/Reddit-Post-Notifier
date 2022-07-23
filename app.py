@@ -64,10 +64,11 @@ def stream_submissions(reddit, subreddits, apprise_client):
 def process_submission(submission, subreddits, apprise_client):
     """Notify if given submission matches search."""
     title = submission.title
+    selftext = submission.selftext
     sub = submission.subreddit.display_name
     search_terms = subreddits[sub.lower()]
 
-    if any(term in title.lower() for term in search_terms):
+    if any(term in title.lower() for term in search_terms) or any(term in selftext.lower() for term in search_terms):
         notify(apprise_client, title, submission.id)
         if LOGGING != "FALSE":
             print(datetime.datetime.fromtimestamp(submission.created_utc),
